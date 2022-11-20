@@ -2,6 +2,7 @@ package entities;
 
 import annotations.Column;
 import annotations.Key;
+import annotations.Table;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -67,6 +68,11 @@ public class Entity {
             e.printStackTrace();
         }
         return values;
+    }
+
+    public String getTable()
+    {
+        return this.getClass().getAnnotation(Table.class).tableName();
     }
 
 

@@ -17,7 +17,7 @@ public class UserController {
 
     public List<User> getAllUsers()
     {
-        return service.getAllUsers();
+        return service.selectAll();
     }
 
     public List<User> getAllUserWhereAttributeEquals(String attribute, String value)
@@ -42,13 +42,13 @@ public class UserController {
 
     public boolean saveUser(User user)
     {
-        return service.saveUser(user);
+        return service.save(user);
     }
-    public boolean updateUser(User user) { return service.updateUser(user); }
+    public boolean updateUser(User user) { return service.update(user); }
 
     public boolean removeUser(User user)
     {
-        return service.removeUser(user);
+        return service.remove(user);
     }
 
     public static void main(String... args)

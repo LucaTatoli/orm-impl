@@ -32,7 +32,7 @@ public class PortafoglioController
 
     public List<Portafoglio> getAllWallets()
     {
-        return service.getAllWallets();
+        return service.selectAll();
     }
 
     public ResultSet executeQuery(String query)

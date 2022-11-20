@@ -1,24 +1,13 @@
-import controller.PortafoglioController;
-import controller.UserController;
-import entities.Portafoglio;
-import entities.User;
-
-import java.util.List;
+import controller.SpeseController;
 
 public class Main
 {
     public static void main(String... args)
     {
-        UserController userController = new UserController();
-        User user;
-        user = userController.getAllUserWhereAttributeEquals("cognome", "Masiero").get(0);
+        SpeseController controller = new SpeseController();
 
-        PortafoglioController walletController = new PortafoglioController();
-        Portafoglio portafoglio = new Portafoglio();
-        portafoglio.setUserId(user.getId());
-        portafoglio.setAmount(50000);
-        walletController.save(portafoglio);
-        List<Portafoglio> wallet = walletController.getAllWallets();
-        wallet.forEach(System.out::println);
+        controller.loadSpeseFromTSV("/home/luca/Downloads/lista.tsv");
+        System.out.println(controller.getTotalByCategory("TrasPORTI"));
+        System.out.println(controller.getTotalIn("novembre"));
     }
 }

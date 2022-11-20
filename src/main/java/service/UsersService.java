@@ -9,48 +9,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersService
+public class UsersService extends BasicService<User>
 {
-
-    private TestManager connectionManager;
-    public static final String table = "test_schema.users";
 
     public UsersService()
     {
-        connectionManager = new TestManager();
-    }
-
-    public List<User> getAllUsers()
-    {
-        ArrayList<User> users = new ArrayList<User>();
-
-        ResultSet usersSet = connectionManager.executeQuery(String.format("select * from %s;", User.class.getAnnotation(Table.class).tableName()));
-
-        try {
-            while (usersSet.next())
-            {
-                String userString = String.format("%s:%s:%s", usersSet.getString(1), usersSet.getString(2), usersSet.getString(3));
-                users.add(userTransformer(userString));
-            }
-        } catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-
-        return users;
+        super(User.class);
+        entityManager = new TestManager();
     }
 
     public List<User> getAllUserWhereAttributeEquals(String attribute, String value)
     {
         ArrayList<User> users = new ArrayList<User>();
 
-        ResultSet usersSet = connectionManager.executeQuery(String.format("select * from %s where %s = '%s';", User.class.getAnnotation(Table.class).tableName(), attribute, value));
+        ResultSet usersSet = entityManager.executeQuery(String.format("select * from %s where %s = '%s';", type.getAnnotation(Table.class).tableName(), attribute, value));
 
         try {
             while (usersSet.next())
             {
                 String userString = String.format("%s:%s:%s", usersSet.getString(1), usersSet.getString(2), usersSet.getString(3));
-                users.add(userTransformer(userString));
+                users.add(transformer(userString));
             }
         } catch (SQLException e)
         {
@@ -65,7 +43,7 @@ public class UsersService
         ArrayList<User> users = new ArrayList<User>();
 
         StringBuilder query = new StringBuilder();
-        query.append(String.format("select * from %s where ", User.class.getAnnotation(Table.class).tableName()));
+        query.append(String.format("select * from %s where ", type.getAnnotation(Table.class).tableName()));
 
         for(int i = 0; i < values.length; i++)
         {
@@ -75,13 +53,13 @@ public class UsersService
         }
         query.append(";");
         System.out.println(query);
-        ResultSet usersSet = connectionManager.executeQuery(query.toString());
+        ResultSet usersSet = entityManager.executeQuery(query.toString());
 
         try {
             while (usersSet.next())
             {
                 String userString = String.format("%s : %s : %s", usersSet.getString(1), usersSet.getString(2), usersSet.getString(3));
-                users.add(userTransformer(userString));
+                users.add(transformer(userString));
             }
         } catch (SQLException e)
         {
@@ -94,13 +72,13 @@ public class UsersService
     public List<User> getUsersWithCustomQuery(String query)
     {
         ArrayList<User> users = new ArrayList<User>();
-        ResultSet usersSet = connectionManager.executeQuery(query);
+        ResultSet usersSet = entityManager.executeQuery(query);
 
         try {
             while (usersSet.next())
             {
                 String userString = String.format("%s : %s : %s", usersSet.getString(1), usersSet.getString(2), usersSet.getString(3));
-                users.add(userTransformer(userString));
+                users.add(transformer(userString));
             }
         } catch (SQLException e)
         {
@@ -115,16 +93,16 @@ public class UsersService
         User user = new User();
 
         StringBuilder query = new StringBuilder();
-        query.append(String.format("select * from %s where ", table));
+        query.append(String.format("select * from %s where ", type.getAnnotation(Table.class).tableName()));
         query.append(String.format("id = %d", id));
 
-        ResultSet usersSet = connectionManager.executeQuery(query.toString());
+        ResultSet usersSet = entityManager.executeQuery(query.toString());
 
         try {
             while (usersSet.next())
             {
                 String userString = String.format("%s:%s:%s", usersSet.getString(1), usersSet.getString(2), usersSet.getString(3));
-                user = userTransformer(userString);
+                user = transformer(userString);
             }
         } catch (SQLException e)
         {
@@ -134,7 +112,7 @@ public class UsersService
         return user;
     }
 
-    private User userTransformer(String input)
+    protected User transformer(String input)
     {
         User user = new User();
 
@@ -144,21 +122,6 @@ public class UsersService
         user.setCognome(values[1]);
 
         return user;
-    }
-
-    public boolean saveUser(User user)
-    {
-        return connectionManager.save(user);
-    }
-
-    public boolean updateUser(User user)
-    {
-        return connectionManager.update(user);
-    }
-
-    public boolean removeUser(User user)
-    {
-        return connectionManager.remove(user);
     }
 
 }

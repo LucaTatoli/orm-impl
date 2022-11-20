@@ -104,7 +104,7 @@ public abstract class EntityManager {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            System.out.println("Chiave duplicata per il record: " + entity);
         }
         finally
         {
